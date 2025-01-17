@@ -30,6 +30,7 @@
 #include <iostream>
 #include "Game.h"
 
+#define RUN_BY_STEP false
 
 // The main elements of a game loop are:
 	// Input	
@@ -49,7 +50,7 @@ int main(int args, char* argv[]) {
 		Place all initial units on the board
 	*/
 
-	
+	Game game(DEBUG_UPDATE);
 
 	/************************************/
 	//   G A M E   L O O P
@@ -60,8 +61,28 @@ int main(int args, char* argv[]) {
 		Update
 		Render
 	*/
+	game.setBackgroundColor(0, 0, 255, 255);
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	if (RUN_BY_STEP) {
+		std::cout << "Enter any key to continue simulation: ";
+		char q;
+		while (std::cin >> q) {
+			game.handleEvents();
+			game.update();
+			game.render();
+			std::cout << "Enter any key to continue simulation: ";
+		}
+	}
+	else {
+		while (game.isRunning()) {
+			game.handleEvents();
+			game.update();
+			game.render();
+
+		}
+	}
+
+	/*SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -69,11 +90,12 @@ int main(int args, char* argv[]) {
 
 	SDL_RenderPresent(renderer);
 
-	SDL_Delay(3000);
+	SDL_Delay(3000);*/
 
 	/************************************/
 	//   R E T U R N I N G   A N D   C L E A N U P
 	/************************************/
+
 
 
 	return 0;

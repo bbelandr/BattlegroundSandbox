@@ -14,10 +14,10 @@ struct Color {
 
 class Object {	// I'm making all of this public for ease
 public:
-	int x, y;
+	float x, y;
 	UNIT_TYPE type;
 	bool isVisible;
 	Color color;
 
-	Object(int x, int y);
+	Object(float x, float y);
 };
