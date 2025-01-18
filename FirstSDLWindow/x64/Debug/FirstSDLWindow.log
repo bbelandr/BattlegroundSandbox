@@ -1,2 +1,4 @@
 ﻿  Game.cpp
+C:\Users\spart\source\repos\PixelDrawing\FirstSDLWindow\Game.cpp(23,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\spart\source\repos\PixelDrawing\FirstSDLWindow\Game.cpp(23,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   FirstSDLWindow.vcxproj -> C:\Users\spart\source\repos\PixelDrawing\x64\Debug\Pizzazone.exe

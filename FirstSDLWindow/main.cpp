@@ -50,7 +50,7 @@ int main(int args, char* argv[]) {
 		Place all initial units on the board
 	*/
 
-	Game game(DEBUG_UPDATE);
+	Game game(600, 400, 0);
 
 	/************************************/
 	//   G A M E   L O O P

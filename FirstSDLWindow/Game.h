@@ -13,10 +13,11 @@ enum Flags {
 class Game {
 
 public:
-	Game(const int flags);						// Initializes the screen as well as the initial placements for spawners
+	Game(const int width, const int height, const int flags);						// Initializes the screen as well as the initial placements for spawners
 	~Game();
 	int handleEvents();
 	int update();
+	void updatePositions();						// Adds the accelerations and velocities to their respective objects
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
@@ -24,6 +25,8 @@ public:
 private:
 	Color backgroundColor;						// The default color for the background is black
 	SDL_Window* window;
+	int windowHeight;
+	int windowWidth;
 	SDL_Renderer* renderer;
 	std::vector<Object> objects;
 

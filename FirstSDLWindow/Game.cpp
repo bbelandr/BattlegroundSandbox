@@ -1,14 +1,17 @@
 #include "Game.h"
 #include <iostream>
 #include <cstdio>
+#include <cstdlib>
 
-Game::Game(const int flags) {
+Game::Game(const int width, const int height, const int flags) {
 	this->flags = flags;
 	
 	// SDL init
 	SDL_Init(SDL_INIT_EVERYTHING);
 	running = true;
-	window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+	windowWidth = width;
+	windowHeight = height;
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	backgroundColor.r = 0;
 	backgroundColor.g = 0;
@@ -16,8 +19,13 @@ Game::Game(const int flags) {
 	backgroundColor.a = 255;
 
 	// Board init
-	Object* test = new Object(10, 10);
-	objects.push_back(*test);
+	for (int i = 0; i < 1000; i++) {	// Adding test objects
+		Object* test = new Object(rand() % windowWidth, rand() % windowHeight);
+		test->acc.x = (float)(rand() % 100 + 1) / 20;
+		test->acc.y = (float)(rand() % 100 + 1) / 20;
+		objects.push_back(*test);
+
+	}
 	endOfLastUpdate = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
@@ -49,6 +57,25 @@ int Game::handleEvents() {
 	return 0;
 }
 
+void Game::updatePositions() {
+	for (auto i = 0; i < objects.size(); i++) {
+		if (!objects[i].isStatic) {
+			// Movement
+			objects[i].vel = objects[i].vel + objects[i].acc * deltaTime;
+			objects[i].pos = objects[i].pos + objects[i].vel * deltaTime;
+			objects[i].color.a -= 1;
+
+			// Collision with edges
+			if (objects[i].pos.x >= windowWidth || objects[i].pos.x < 0) {	// on x axis
+				objects[i].vel.x *= -1;
+			}
+			if (objects[i].pos.y >= windowHeight || objects[i].pos.y < 0) {	// on y axis
+				objects[i].vel.y *= -1;
+			}
+		}
+	}
+}
+
 int Game::update() {
 	// Deltatime
 	auto start = std::chrono::steady_clock::now();
@@ -57,7 +84,7 @@ int Game::update() {
 	
 	// Update objects
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
-	objects[0].x = objects[0].x + 20 * deltaTime;
+	updatePositions();
 
 	endOfLastUpdate = std::chrono::steady_clock::now();
 	return 0;
@@ -74,9 +101,9 @@ int Game::render() {
 	for (auto i = 0; i < objects.size(); i++) {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
-		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].x, objects[i].y);
+		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
 		SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
-		SDL_RenderDrawPoint(renderer, (int)objects[i].x, (int)objects[i].y);
+		SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
 	}
 
 	SDL_RenderPresent(renderer);
