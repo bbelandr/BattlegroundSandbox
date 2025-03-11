@@ -22,10 +22,17 @@ Game::Game(const int width, const int height, const int flags) {
 	for (int i = 0; i < 1000; i++) {	// Adding test objects
 		Object* test = new Object(rand() % windowWidth, rand() % windowHeight);
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
-		test->acc.y = (float)(rand() % 100 + 1) / 20;
+		test->acc.y = (float) 500;
 		objects.push_back(*test);
 
 	}
+	Object test1(25, 25);
+	test1.color.r = 255;
+	test1.color.g = 255;
+	test1.color.b = 255;
+	test1.acc.x = (float)-30;
+	test1.acc.y = (float)-500;
+	objects.push_back(test1);
 	endOfLastUpdate = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
